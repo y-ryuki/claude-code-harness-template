@@ -10,8 +10,13 @@ description = "Allowlist for false positives in this template"
 paths = [
   '''docs/.*\.md$''',
   '''README\.md$''',
-  '''.claude/settings\.local\.json\.example$''',
+  '''\.claude/settings\.local\.json\.example$''',
   '''examples/.*$''',
+  # テスト用のダミーシークレットを含むテストファイル
+  '''tests/hooks/test_detect_secrets\.bats$''',
+  '''tests/hooks/test_injection_scanner\.bats$''',
+  # フック実装内の検出パターン定義（リテラルパターンのみ、実値なし）
+  '''\.claude/hooks/detect-secrets\.sh$''',
 ]
 regexes = [
   '''sk-ant-\.\.\.''',           # ドキュメント内のプレースホルダ

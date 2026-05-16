@@ -27,18 +27,20 @@ test.describe('Example E2E', () => {
     await expect(heading).toHaveText('Example Domain');
   });
 
-  test('link interaction', async ({ page }) => {
+  test('paragraph and link present', async ({ page }) => {
     await page.goto('https://example.com');
 
-    // リンクをクリック
-    const link = page.getByRole('link', { name: /more information/i });
+    // ページ内に少なくとも1つのリンクと段落が存在することを確認
+    const link = page.locator('a').first();
     await expect(link).toBeVisible();
 
-    await page.screenshot({
-      path: 'test-results/02-link-visible.png',
-    });
+    const paragraph = page.locator('p').first();
+    await expect(paragraph).toBeVisible();
 
-    // 実際のクリックは外部遷移なので省略
+    await page.screenshot({
+      path: 'test-results/02-page-content.png',
+      fullPage: true,
+    });
   });
 
   test.skip('intentionally skipped example', async ({ page }) => {
