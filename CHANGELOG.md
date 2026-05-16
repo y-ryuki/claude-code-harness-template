@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.0 (2026-05-16)
+
+
+### Features
+
+* **docdd:** add DocDD + autopilot + multi-review + Codex compat + merge prohibition ([40bfd06](https://github.com/y-ryuki/claude-code-harness-template/commit/40bfd06e9358c38edf0dda4dd7507dc8e3fe4926))
+* **docdd:** add DocDD + autopilot + multi-review + Codex compat + merge prohibition ([c57fdad](https://github.com/y-ryuki/claude-code-harness-template/commit/c57fdad3761a3b3a8199484ac77c24543e2b5765))
+* initial template release ([a1ce32a](https://github.com/y-ryuki/claude-code-harness-template/commit/a1ce32ad8abac727f52586c95e3b1bad14cc070d))
+* **test:** add bats hook tests + Playwright E2E + PR video comments ([ea77680](https://github.com/y-ryuki/claude-code-harness-template/commit/ea77680657a1a9776f098d7010a918c36097f4a8))
+
+
+### Bug Fixes
+
+* **ci:** make E2E sample stable + gitleaks ignore test fixtures ([52f1595](https://github.com/y-ryuki/claude-code-harness-template/commit/52f159591893f7be84d88ce1d278dcf710780a11))
+* **ci:** make workflows green on first run ([f231337](https://github.com/y-ryuki/claude-code-harness-template/commit/f2313376d7e443aec149d0e42c44c2b870c6e94a))
+
 ## [Unreleased]
 
 ### Added
