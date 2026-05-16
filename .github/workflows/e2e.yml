@@ -1,0 +1,185 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write  # PR コメント投稿用
+  actions: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        id: playwright
+        run: npx playwright test --config tests/e2e/playwright.config.ts
+        env:
+          CI: true
+        continue-on-error: true
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            tests/e2e/playwright-report/
+            tests/e2e/test-results/
+            tests/e2e/test-results.json
+          retention-days: 14
+
+      - name: Upload videos and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-videos-${{ github.run_id }}
+          path: tests/e2e/test-results/**/*.{webm,png,zip}
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Parse test results
+        if: always()
+        id: parse
+        run: |
+          if [ -f tests/e2e/test-results.json ]; then
+            TOTAL=$(jq '.stats.expected + .stats.unexpected + .stats.skipped + .stats.flaky' tests/e2e/test-results.json 2>/dev/null || echo "0")
+            PASSED=$(jq '.stats.expected' tests/e2e/test-results.json 2>/dev/null || echo "0")
+            FAILED=$(jq '.stats.unexpected' tests/e2e/test-results.json 2>/dev/null || echo "0")
+            SKIPPED=$(jq '.stats.skipped' tests/e2e/test-results.json 2>/dev/null || echo "0")
+            FLAKY=$(jq '.stats.flaky' tests/e2e/test-results.json 2>/dev/null || echo "0")
+            DURATION=$(jq '.stats.duration / 1000' tests/e2e/test-results.json 2>/dev/null || echo "0")
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "passed=$PASSED" >> $GITHUB_OUTPUT
+            echo "failed=$FAILED" >> $GITHUB_OUTPUT
+            echo "skipped=$SKIPPED" >> $GITHUB_OUTPUT
+            echo "flaky=$FLAKY" >> $GITHUB_OUTPUT
+            echo "duration=$DURATION" >> $GITHUB_OUTPUT
+          else
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "passed=0" >> $GITHUB_OUTPUT
+            echo "failed=0" >> $GITHUB_OUTPUT
+            echo "skipped=0" >> $GITHUB_OUTPUT
+            echo "flaky=0" >> $GITHUB_OUTPUT
+            echo "duration=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Collect screenshots for PR comment
+        if: github.event_name == 'pull_request' && always()
+        id: collect
+        run: |
+          mkdir -p screenshots-for-pr
+          # 失敗時スクショ + 明示スクショ両方をコピー
+          find tests/e2e/test-results -name "*.png" -exec cp {} screenshots-for-pr/ \; 2>/dev/null || true
+          SHOTS=$(ls screenshots-for-pr/ 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$SHOTS" >> $GITHUB_OUTPUT
+
+      # スクショを imgur / gh upload-artifact のリンクで公開する代わりに、
+      # peter-evans/create-or-update-comment を使い PR にレポートと artifact リンクをコメント
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const stats = {
+              total: '${{ steps.parse.outputs.total }}',
+              passed: '${{ steps.parse.outputs.passed }}',
+              failed: '${{ steps.parse.outputs.failed }}',
+              skipped: '${{ steps.parse.outputs.skipped }}',
+              flaky: '${{ steps.parse.outputs.flaky }}',
+              duration: '${{ steps.parse.outputs.duration }}',
+            };
+            const status = stats.failed > 0 ? '❌ Failed' : (stats.flaky > 0 ? '⚠️ Flaky' : '✅ Passed');
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const body = [
+              `## 🎭 E2E Test Results`,
+              ``,
+              `**Status**: ${status}`,
+              ``,
+              `| Metric | Count |`,
+              `|--------|-------|`,
+              `| ✅ Passed | ${stats.passed} |`,
+              `| ❌ Failed | ${stats.failed} |`,
+              `| ⏭ Skipped | ${stats.skipped} |`,
+              `| ⚠️ Flaky | ${stats.flaky} |`,
+              `| ⏱ Duration | ${stats.duration}s |`,
+              ``,
+              `### 📹 Artifacts`,
+              ``,
+              `- 🎬 [動画 & スクリーンショット](${runUrl}#artifacts)`,
+              `  - \`playwright-videos-${context.runId}\` — 全テストの録画 (.webm) + スクショ (.png)`,
+              `- 📊 [HTML Report](${runUrl}#artifacts)`,
+              `  - \`playwright-report-${context.runId}\` — Playwright HTMLレポート`,
+              ``,
+              `### 🔍 確認手順`,
+              ``,
+              `1. 上記リンクから Artifact を DL`,
+              `2. \`playwright-report\` を解凍して \`index.html\` を開く`,
+              `3. 失敗テストの動画 (.webm) を再生`,
+              ``,
+              `### 💡 ローカル再現`,
+              ``,
+              `\`\`\`bash`,
+              `npm ci`,
+              `npx playwright install --with-deps chromium`,
+              `npx playwright test --config tests/e2e/playwright.config.ts`,
+              `npx playwright show-report tests/e2e/playwright-report`,
+              `\`\`\``,
+              ``,
+              `---`,
+              `<sub>🤖 このコメントは [.github/workflows/e2e.yml](.github/workflows/e2e.yml) によって自動投稿されています</sub>`,
+            ].join('\n');
+
+            // 既存の E2E コメントを探して更新（spam 防止）
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('🎭 E2E Test Results')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail job if E2E failed
+        if: steps.playwright.outcome == 'failure'
+        run: exit 1

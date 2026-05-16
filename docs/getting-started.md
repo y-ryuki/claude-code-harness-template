@@ -43,7 +43,7 @@ claude --version
 
 #### オプション A: GitHub Template ボタン（推奨）
 
-1. このリポジトリ（`<owner>/claude-code-harness-template`）を開く
+1. このリポジトリ（`y-ryuki/claude-code-harness-template`）を開く
 2. 緑の **「Use this template」** → **「Create a new repository」**
 3. リポジトリ名・公開範囲を選択
 4. **「Create repository」**
@@ -51,7 +51,7 @@ claude --version
 #### オプション B: clone してから git 履歴をリセット
 
 ```bash
-git clone https://github.com/<owner>/claude-code-harness-template.git my-project
+git clone https://github.com/y-ryuki/claude-code-harness-template.git my-project
 cd my-project
 rm -rf .git
 git init
@@ -63,7 +63,7 @@ git commit -m "chore: initial commit from template"
 
 ```bash
 # 既存プロジェクトのルートで
-curl -fsSL https://raw.githubusercontent.com/<owner>/claude-code-harness-template/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/y-ryuki/claude-code-harness-template/main/scripts/install.sh | bash
 # ↑ 注意: pipe-to-shell は本テンプレでは推奨しません
 #   セキュリティ重視なら手動で必要ファイルだけコピーしてください
 ```
@@ -207,7 +207,7 @@ Settings → Security → Code security and analysis
 
 #### CODEOWNERS を編集
 
-`.github/CODEOWNERS` の `<owner>` を自分の GitHub ID に置換:
+`.github/CODEOWNERS` の `y-ryuki` を自分の GitHub ID に置換:
 
 ```
 * @your-github-username

@@ -1,0 +1,43 @@
+name: Hook Unit Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - '.claude/hooks/**'
+      - 'tests/hooks/**'
+      - '.claude/settings.json'
+
+permissions:
+  contents: read
+
+jobs:
+  bats-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup bats-core
+        uses: bats-core/bats-action@3.0.1
+
+      - name: Install jq + python3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq python3
+
+      - name: Make hooks executable
+        run: chmod +x .claude/hooks/*.sh .claude/hooks/*.py
+
+      - name: Run bats tests
+        run: bats --tap tests/hooks/
+
+      - name: Run settings validator
+        run: bash scripts/validate-settings.sh
+
+      - name: Run audit script
+        run: bash scripts/audit.sh

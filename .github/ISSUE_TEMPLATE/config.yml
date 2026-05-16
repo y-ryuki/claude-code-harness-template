@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🔒 セキュリティ脆弱性の報告
-    url: https://github.com/<owner>/claude-code-harness-template/security/advisories/new
+    url: https://github.com/y-ryuki/claude-code-harness-template/security/advisories/new
     about: Private Vulnerability Reporting で報告してください（Issue ではなく）
   - name: 💬 質問・ディスカッション
-    url: https://github.com/<owner>/claude-code-harness-template/discussions
+    url: https://github.com/y-ryuki/claude-code-harness-template/discussions
     about: バグでも機能要望でもない質問はこちら
   - name: 📚 ドキュメント
-    url: https://github.com/<owner>/claude-code-harness-template/tree/main/docs
+    url: https://github.com/y-ryuki/claude-code-harness-template/tree/main/docs
     about: 使い方は docs/ を確認

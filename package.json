@@ -1,0 +1,29 @@
+{
+  "name": "claude-code-harness-template",
+  "version": "0.1.0",
+  "description": "Hardened Claude Code harness template with strict guardrails and mobile-first dev flow",
+  "private": true,
+  "scripts": {
+    "test": "npm-run-all -s test:hooks test:settings",
+    "test:hooks": "bats tests/hooks/",
+    "test:settings": "bash scripts/validate-settings.sh",
+    "test:audit": "bash scripts/audit.sh",
+    "test:e2e": "playwright test --config tests/e2e/playwright.config.ts",
+    "test:e2e:headed": "playwright test --config tests/e2e/playwright.config.ts --headed",
+    "test:e2e:debug": "playwright test --config tests/e2e/playwright.config.ts --debug",
+    "test:e2e:report": "playwright show-report tests/e2e/playwright-report",
+    "test:all": "npm-run-all -s test test:e2e",
+    "playwright:install": "playwright install --with-deps chromium",
+    "lint": "echo 'Add your linter here (e.g. eslint, ruff)'",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml,yaml}\""
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT"
+}

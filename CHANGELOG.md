@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DevContainer with Node 20 + Python 3.12 + iptables firewall
 - GitHub Action for @claude mention workflow
 - Mobile development guide (Claude Code Web / Remote Control / GitHub Mobile)
+- bats-core unit tests for all hooks (rm -rf, secrets, injection scanner)
+- Playwright E2E sample (video recording, screenshots, HTML report)
+- E2E workflow with auto PR comment (test stats + artifact links)
+- Testing docs (`docs/testing.md`)
 
 ## [0.1.0] - 2026-05-16
 

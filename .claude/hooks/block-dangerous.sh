@@ -29,13 +29,13 @@ block() {
 # Critical: 即停止すべき破壊コマンド
 # ============================================
 
-# rm -rf / ~ $HOME *
-if echo "$NORMALIZED" | grep -qE 'rm\s+-[a-zA-Z]*r[a-zA-Z]*f\s+(/[\s$]|/$|~[\s$]|~/$|\$HOME[\s$]|\$HOME/)'; then
+# rm -rf / ~ $HOME
+if echo "$NORMALIZED" | grep -qE 'rm[[:space:]]+-[a-zA-Z]*r[a-zA-Z]*f[[:space:]]+(/([[:space:]]|$)|~([[:space:]]|$|/)|\$HOME([[:space:]]|$|/))'; then
     block "🚨 CRITICAL: Destructive rm -rf on root/home detected. Use specific paths instead."
 fi
 
-# rm -rf * / **
-if echo "$NORMALIZED" | grep -qE 'rm\s+-[a-zA-Z]*r[a-zA-Z]*f\s+(\*|\.|\*/|\.\.)\s*$'; then
+# rm -rf with wildcards at end
+if echo "$NORMALIZED" | grep -qE 'rm[[:space:]]+-[a-zA-Z]*r[a-zA-Z]*f[[:space:]]+\*[[:space:]]*$'; then
     block "🚨 CRITICAL: Wildcard rm -rf blocked. Specify exact paths."
 fi
 

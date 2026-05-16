@@ -1,9 +1,9 @@
 # すべての変更は基本オーナーがレビュー
-* @<owner>
+* @y-ryuki
 
 # セキュリティクリティカルな部分は2名レビュー必須を推奨
-.claude/settings.json @<owner>
-.claude/hooks/ @<owner>
-.devcontainer/ @<owner>
-.github/workflows/ @<owner>
-SECURITY.md @<owner>
+.claude/settings.json @y-ryuki
+.claude/hooks/ @y-ryuki
+.devcontainer/ @y-ryuki
+.github/workflows/ @y-ryuki
+SECURITY.md @y-ryuki

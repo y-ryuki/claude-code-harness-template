@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 PASS=0
 FAIL=0
 CRITICAL_FAIL=0
-TOTAL=15
+TOTAL=18
 
 check() {
     local desc="$1"
@@ -79,6 +79,18 @@ check "DevContainer 設定" \
 check "init-firewall.sh" \
     "Recommended" \
     "test -f .devcontainer/init-firewall.sh"
+
+echo ""
+echo "▶ Tests"
+check "bats hook tests が存在" \
+    "High" \
+    "test -d tests/hooks && ls tests/hooks/*.bats >/dev/null 2>&1"
+check "Playwright E2E config" \
+    "Recommended" \
+    "test -f tests/e2e/playwright.config.ts"
+check ".github/workflows/test-hooks.yml" \
+    "Recommended" \
+    "test -f .github/workflows/test-hooks.yml"
 
 echo ""
 echo "▶ Files"

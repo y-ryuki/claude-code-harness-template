@@ -20,6 +20,7 @@ Anthropic 公式ドキュメント・人気12リポ（claude-flow, claude-code-a
 | **📦 スキル** | `pr-summary` `commit-helper` `changelog-update` の動的注入スキル |
 | **📱 スマホ開発** | Claude Code Web + `@claude` GitHub Action でスマホから Issue → PR の完結 |
 | **🐳 DevContainer** | Node 20 + Python 3.12 + iptables ファイアウォール隔離 |
+| **🧪 テスト** | bats-core で hooks ユニットテスト + Playwright で E2E（動画録画 + PR コメント自動投稿） |
 | **🚀 CI/CD** | release-please による自動 semver / gitleaks シークレットスキャン / Dependabot |
 
 ---
@@ -45,13 +46,13 @@ Anthropic 公式ドキュメント・人気12リポ（claude-flow, claude-code-a
 
 ```bash
 # 既存プロジェクトのルートで実行
-curl -fsSL https://raw.githubusercontent.com/<owner>/claude-code-harness-template/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/y-ryuki/claude-code-harness-template/main/scripts/install.sh | bash
 ```
 
 ### 方法3: 手動セットアップ
 
 ```bash
-git clone https://github.com/<owner>/claude-code-harness-template.git my-project
+git clone https://github.com/y-ryuki/claude-code-harness-template.git my-project
 cd my-project
 rm -rf .git && git init
 ./scripts/setup.sh
@@ -303,6 +304,7 @@ claude-code-harness-template/
 - [`docs/customization.md`](docs/customization.md) — テンプレのカスタマイズ
 - [`docs/mobile-development.md`](docs/mobile-development.md) — スマホ開発フロー詳細
 - [`docs/hooks-reference.md`](docs/hooks-reference.md) — 各フックの仕様
+- [`docs/testing.md`](docs/testing.md) — テスト戦略（bats + Playwright）
 - [`docs/architecture.md`](docs/architecture.md) — 設計思想
 
 ---

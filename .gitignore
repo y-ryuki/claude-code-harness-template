@@ -59,3 +59,12 @@ htmlcov/
 tmp/
 .tmp/
 *.bak
+
+# Playwright
+/tests/e2e/playwright-report/
+/tests/e2e/test-results/
+/tests/e2e/test-results.json
+/tests/e2e/blob-report/
+/tests/e2e/.cache/
+playwright/.cache/
+screenshots-for-pr/
