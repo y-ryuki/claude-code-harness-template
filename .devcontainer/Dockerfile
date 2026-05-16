@@ -1,4 +1,4 @@
-FROM node:20-bookworm
+FROM node:26-bookworm
 
 ARG TZ=Asia/Tokyo
 ENV TZ=$TZ DEBIAN_FRONTEND=noninteractive
