@@ -8,7 +8,10 @@ on:
     paths:
       - '.claude/hooks/**'
       - 'tests/hooks/**'
+      - 'tests/conventions/**'
       - '.claude/settings.json'
+      - 'docs/decisions/**'
+      - 'docs/specs/**'
 
 permissions:
   contents: read
@@ -33,8 +36,11 @@ jobs:
       - name: Make hooks executable
         run: chmod +x .claude/hooks/*.sh .claude/hooks/*.py
 
-      - name: Run bats tests
+      - name: Run bats tests (hooks)
         run: bats --tap tests/hooks/
+
+      - name: Run bats tests (conventions)
+        run: bats --tap tests/conventions/
 
       - name: Run settings validator
         run: bash scripts/validate-settings.sh

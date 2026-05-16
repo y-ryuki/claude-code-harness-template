@@ -20,6 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Playwright E2E sample (video recording, screenshots, HTML report)
 - E2E workflow with auto PR comment (test stats + artifact links)
 - Testing docs (`docs/testing.md`)
+- **DocDD (Document-Driven Development)** structure: requirements / decisions (MADR ADR) / specs / architecture (C4)
+- **5 additional review agents**: architecture / performance / accessibility / maintainability / ux
+- **`/review-multi`**: 7-agent parallel review with integrated report
+- **`/autopilot <issue#>`**: Issue → Spec → impl → test → review → PR (Merge excluded)
+- **`/adr`**, **`/spec`**, **`/requirements`**: DocDD doc scaffolders
+- **Merge prohibition (3-layer)**: settings deny + `block-merge.sh` hook + CLAUDE.md rule
+- **Codex CLI compatibility**: `AGENTS.md` auto-sync + `.codex/config.toml.example` + agents-sync workflow
+- **Unified naming conventions**: Issue/Branch/Commit/PR with bats validation tests
+- audit.sh expanded to 24 checks
 
 ## [0.1.0] - 2026-05-16
 

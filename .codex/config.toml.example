@@ -1,0 +1,63 @@
+# Codex CLI 設定例
+# OpenAI Codex CLI: https://github.com/openai/codex
+#
+# このファイルは設定例です。実際の設定は ~/.codex/config.toml に書きます。
+# プロジェクト固有の設定は .codex/config.toml に書けます（gitignore 推奨）。
+
+# モデル設定
+[model]
+default = "gpt-5-codex"
+# 他: gpt-5, o4-mini, claude-3-5-sonnet-via-openai 等
+
+# 承認モード
+# - suggest: 各操作で確認（最も安全）
+# - auto-edit: ファイル編集は自動、shell は要承認
+# - full-auto: 全自動（信頼できる sandbox 内のみ推奨）
+[approval]
+mode = "suggest"
+
+# サンドボックス
+# - read-only: 読み取りのみ
+# - workspace-write: workspace 内のみ書き込み可（推奨）
+# - danger-full-access: 制限なし（非推奨）
+[sandbox]
+mode = "workspace-write"
+
+# プロジェクトルートから読み込むファイル
+[context]
+files = [
+  "AGENTS.md",
+  "docs/naming-conventions.md",
+  "docs/workflows/docdd.md",
+]
+
+# ツール
+[tools]
+shell = true
+file_edit = true
+web_fetch = false  # 信頼境界の観点で OFF 推奨
+
+# ガードレール（Codex 側でブロック）
+[guardrails]
+deny_commands = [
+  "rm -rf /",
+  "rm -rf ~",
+  "curl * | sh",
+  "curl * | bash",
+  "wget * | sh",
+  "wget * | bash",
+  "git push --force",
+  "git push -f",
+  "git push --no-verify",
+  "gh pr merge",       # ← 重要: Merge 禁止
+  "git merge",
+  "sudo *",
+  "chmod 777 *",
+]
+
+# CI/CD 設定の参照
+[ci]
+provider = "github-actions"
+workflow_paths = [
+  ".github/workflows/",
+]

@@ -1,0 +1,67 @@
+name: AGENTS.md Sync Check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'CLAUDE.md'
+      - 'AGENTS.md'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  sync-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Compare CLAUDE.md and AGENTS.md
+        id: check
+        run: |
+          if [ ! -f AGENTS.md ]; then
+            echo "AGENTS.md が存在しません"
+            echo "synced=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          # AGENTS.md の先頭3行はヘッダコメント。4行目以降と CLAUDE.md を比較
+          if diff <(tail -n +4 AGENTS.md) CLAUDE.md > /tmp/diff.txt 2>&1; then
+            echo "✅ CLAUDE.md と AGENTS.md は同期済みです"
+            echo "synced=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ CLAUDE.md と AGENTS.md が同期されていません"
+            echo "--- diff ---"
+            cat /tmp/diff.txt | head -30
+            echo "synced=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Comment on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              `## ⚠️ AGENTS.md sync mismatch`,
+              ``,
+              `CLAUDE.md と AGENTS.md が同期されていません。`,
+              `Codex CLI 互換性のため、両者の内容（先頭3行のヘッダを除く）を一致させる必要があります。`,
+              ``,
+              `### 修正方法`,
+              `\`\`\`bash`,
+              `# ローカルで同期`,
+              `{ head -3 AGENTS.md; cat CLAUDE.md; } > AGENTS.md.tmp && mv AGENTS.md.tmp AGENTS.md`,
+              `git add AGENTS.md && git commit -m "docs: sync AGENTS.md with CLAUDE.md"`,
+              `\`\`\``,
+              ``,
+              `または \`.claude/hooks/sync-agents-md.sh\` を有効にすると、ローカルで CLAUDE.md 編集時に自動同期されます。`,
+            ].join('\n');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

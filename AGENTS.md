@@ -1,3 +1,6 @@
+<!-- AGENTS.md: auto-synced from CLAUDE.md by .claude/hooks/sync-agents-md.sh -->
+<!-- このファイルは Codex CLI 互換性のため CLAUDE.md と同期されています。直接編集せず、CLAUDE.md を編集してください。-->
+
 # Project Guidelines
 
 このファイルは Claude Code が毎回読み込むプロジェクト全体方針です。**60〜80行以内**を維持してください。長くなったら `.claude/CLAUDE.md` や `docs/` に分割してください。
