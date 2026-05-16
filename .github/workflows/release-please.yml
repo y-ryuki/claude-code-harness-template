@@ -1,5 +1,10 @@
 name: Release Please
 
+# 注意: このワークフローを動かすには、リポジトリ設定で
+#   Settings → Actions → General → Workflow permissions
+#   → "Allow GitHub Actions to create and approve pull requests" を ON
+# にする必要があります。
+
 on:
   push:
     branches: [main]

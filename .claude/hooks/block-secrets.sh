@@ -12,6 +12,7 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.path // 
 [ -z "$FILE_PATH" ] && exit 0
 
 # 正規化（パス区切りを統一）
+# shellcheck disable=SC1003
 NORMALIZED_PATH=$(echo "$FILE_PATH" | tr '\\' '/')
 
 PROTECTED_PATTERNS=(

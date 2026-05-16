@@ -11,6 +11,7 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 [ -z "$COMMAND" ] && exit 0
 
 # クォート正規化（回避策対策）
+# shellcheck disable=SC2016  # 以降の正規表現で $HOME 等をリテラル扱いするため意図的
 NORMALIZED=$(echo "$COMMAND" | tr -d '"'"'" | tr -s ' ')
 
 block() {

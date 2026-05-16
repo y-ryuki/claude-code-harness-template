@@ -40,7 +40,8 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           scandir: '.claude/hooks'
-          additional_files: 'scripts/*.sh .devcontainer/*.sh'
+          additional_files: 'scripts/audit.sh scripts/setup.sh scripts/validate-settings.sh .devcontainer/init-firewall.sh .devcontainer/post-create.sh'
+          severity: error
 
   audit-score:
     runs-on: ubuntu-latest
