@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 PASS=0
 FAIL=0
 CRITICAL_FAIL=0
-TOTAL=18
+TOTAL=25
 
 check() {
     local desc="$1"
@@ -85,12 +85,39 @@ echo "▶ Tests"
 check "bats hook tests が存在" \
     "High" \
     "test -d tests/hooks && ls tests/hooks/*.bats >/dev/null 2>&1"
+check "bats convention tests が存在" \
+    "Recommended" \
+    "test -d tests/conventions && ls tests/conventions/*.bats >/dev/null 2>&1"
+check "block-merge.sh hook" \
+    "Critical" \
+    "test -x .claude/hooks/block-merge.sh"
 check "Playwright E2E config" \
     "Recommended" \
     "test -f tests/e2e/playwright.config.ts"
 check ".github/workflows/test-hooks.yml" \
     "Recommended" \
     "test -f .github/workflows/test-hooks.yml"
+
+echo ""
+echo "▶ DocDD"
+check "docs/decisions/ (ADR)" \
+    "Recommended" \
+    "test -d docs/decisions && test -f docs/decisions/template.md"
+check "docs/specs/ template" \
+    "Recommended" \
+    "test -f docs/specs/template.md"
+check "docs/naming-conventions.md" \
+    "Recommended" \
+    "test -f docs/naming-conventions.md"
+
+echo ""
+echo "▶ Codex Compatibility"
+check "AGENTS.md が存在" \
+    "Recommended" \
+    "test -f AGENTS.md"
+check "AGENTS.md が CLAUDE.md と同期" \
+    "Recommended" \
+    "diff <(tail -n +4 AGENTS.md 2>/dev/null) CLAUDE.md >/dev/null 2>&1"
 
 echo ""
 echo "▶ Files"

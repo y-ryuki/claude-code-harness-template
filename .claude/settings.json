@@ -61,7 +61,31 @@
       "Bash(playwright test *)",
       "Bash(playwright install *)",
       "Bash(bats *)",
-      "Bash(npm-run-all *)"
+      "Bash(npm-run-all *)",
+      "Bash(git worktree list)",
+      "Bash(git worktree add *)",
+      "Bash(git switch *)",
+      "Bash(git checkout -b *)",
+      "Bash(git push -u origin feat/*)",
+      "Bash(git push -u origin fix/*)",
+      "Bash(git push -u origin docs/*)",
+      "Bash(git push -u origin refactor/*)",
+      "Bash(git push -u origin test/*)",
+      "Bash(git push -u origin chore/*)",
+      "Bash(git push -u origin perf/*)",
+      "Bash(git push -u origin ci/*)",
+      "Bash(git push -u origin hotfix/*)",
+      "Bash(git push origin feat/*)",
+      "Bash(git push origin fix/*)",
+      "Bash(git push origin docs/*)",
+      "Bash(git push origin refactor/*)",
+      "Bash(git push origin test/*)",
+      "Bash(git push origin chore/*)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr review --comment *)",
+      "Bash(gh pr ready *)",
+      "Bash(date *)",
+      "Bash(date)"
     ],
     "deny": [
       "Bash(curl * | *)",
@@ -118,7 +142,21 @@
       "Edit(//**/.env)",
       "Edit(//**/.env.*)",
       "Write(//**/.env)",
-      "Write(//**/.env.*)"
+      "Write(//**/.env.*)",
+      "Bash(gh pr merge *)",
+      "Bash(gh pr merge)",
+      "Bash(gh pr review --approve *)",
+      "Bash(gh pr review * --approve)",
+      "Bash(git merge *)",
+      "Bash(git merge)",
+      "Bash(git push origin main)",
+      "Bash(git push origin master)",
+      "Bash(git push origin develop)",
+      "Bash(git push origin release *)",
+      "Bash(git push -u origin main)",
+      "Bash(git push -u origin master)",
+      "Bash(git push * main)",
+      "Bash(git push * master)"
     ]
   },
   "sandbox": {
@@ -153,6 +191,11 @@
             "type": "command",
             "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-dangerous.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-merge.sh",
+            "timeout": 5
           }
         ]
       },
@@ -195,6 +238,11 @@
             "type": "command",
             "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/format-on-save.sh",
             "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/sync-agents-md.sh",
+            "timeout": 5
           }
         ]
       }

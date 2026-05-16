@@ -21,6 +21,12 @@ Anthropic 公式ドキュメント・人気12リポ（claude-flow, claude-code-a
 | **📱 スマホ開発** | Claude Code Web + `@claude` GitHub Action でスマホから Issue → PR の完結 |
 | **🐳 DevContainer** | Node 20 + Python 3.12 + iptables ファイアウォール隔離 |
 | **🧪 テスト** | bats-core で hooks ユニットテスト + Playwright で E2E（動画録画 + PR コメント自動投稿） |
+| **📐 DocDD** | Requirements / ADR (MADR) / Spec / Architecture (C4) の4階層ドキュメント |
+| **🤖 Autopilot** | `/autopilot <issue#>` で Issue → Spec → 実装 → テスト → 多角レビュー → PR を一気通貫 |
+| **👀 多角レビュー** | code / security / architecture / performance / accessibility / maintainability / ux の7並列 |
+| **🚫 Merge 禁止** | `gh pr merge` / `git merge` / main 直 push を 3層（settings + hook + CLAUDE.md）で禁止。Merge は人間専用 |
+| **🤝 Codex 対応** | `AGENTS.md` 自動同期 + `.codex/config.toml` で Claude Code と Codex CLI の両方に対応 |
+| **🏷️ 命名統一** | Issue / Branch / Commit / PR / ADR / Spec すべてに統一規約。bats で検証 |
 | **🚀 CI/CD** | release-please による自動 semver / gitleaks シークレットスキャン / Dependabot |
 
 ---
@@ -306,6 +312,13 @@ claude-code-harness-template/
 - [`docs/hooks-reference.md`](docs/hooks-reference.md) — 各フックの仕様
 - [`docs/testing.md`](docs/testing.md) — テスト戦略（bats + Playwright）
 - [`docs/architecture.md`](docs/architecture.md) — 設計思想
+- [`docs/workflows/docdd.md`](docs/workflows/docdd.md) — DocDD フロー
+- [`docs/naming-conventions.md`](docs/naming-conventions.md) — Issue/Branch/Commit/PR 命名規約
+- [`docs/codex-compatibility.md`](docs/codex-compatibility.md) — Codex CLI 対応
+- [`docs/decisions/`](docs/decisions/) — Architecture Decision Records (ADR)
+- [`docs/specs/`](docs/specs/) — 機能仕様書テンプレ
+- [`docs/requirements/`](docs/requirements/) — 要件定義テンプレ
+- [`docs/architecture/`](docs/architecture/) — システム構造（C4 Model）
 
 ---
 
