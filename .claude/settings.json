@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "default",
+    "disableBypassPermissionsMode": "disable",
+    "allow": [
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git fetch *)",
+      "Bash(git remote -v)",
+      "Bash(git stash list *)",
+      "Bash(git add *)",
+      "Bash(git commit -m *)",
+      "Bash(git restore --staged *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(find . *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(echo *)",
+      "Bash(pwd)",
+      "Bash(which *)",
+      "Bash(date *)",
+      "Bash(node --version)",
+      "Bash(python --version)",
+      "Bash(python3 --version)",
+      "Bash(npm --version)",
+      "Bash(npm install)",
+      "Bash(npm install --save *)",
+      "Bash(npm install --save-dev *)",
+      "Bash(npm ci)",
+      "Bash(npm run lint)",
+      "Bash(npm run test *)",
+      "Bash(npm run build)",
+      "Bash(npm run dev)",
+      "Bash(npm run format)",
+      "Bash(pnpm install)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm lint)",
+      "Bash(pytest *)",
+      "Bash(ruff check *)",
+      "Bash(ruff format *)",
+      "Bash(mypy *)",
+      "Bash(jq *)",
+      "Bash(gh issue *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)"
+    ],
+    "deny": [
+      "Bash(curl * | *)",
+      "Bash(wget * | *)",
+      "Bash(curl *|*)",
+      "Bash(wget *|*)",
+      "Bash(curl * |bash *)",
+      "Bash(curl * |sh *)",
+      "Bash(wget * |bash *)",
+      "Bash(wget * |sh *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push * --force)",
+      "Bash(git push * --no-verify)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f *)",
+      "Bash(git clean -fd *)",
+      "Bash(git branch -D *)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME)",
+      "Bash(rm -rf $HOME/*)",
+      "Bash(rm -rf .)",
+      "Bash(rm -rf *)",
+      "Bash(rm -rf **/*)",
+      "Bash(chmod 777 *)",
+      "Bash(chmod -R 777 *)",
+      "Bash(chmod a+rwx *)",
+      "Bash(chown -R *)",
+      "Bash(sudo *)",
+      "Bash(su *)",
+      "Bash(dd if=*)",
+      "Bash(mkfs*)",
+      "Bash(fdisk *)",
+      "Bash(parted *)",
+      "Bash(:(){ *)",
+      "Bash(* --dangerously-skip-permissions *)",
+      "Read(//**/.env)",
+      "Read(//**/.env.*)",
+      "Read(//**/.envrc)",
+      "Read(//**/.aws/**)",
+      "Read(//**/.ssh/**)",
+      "Read(//**/.gnupg/**)",
+      "Read(//**/id_rsa)",
+      "Read(//**/id_ed25519)",
+      "Read(//**/*.pem)",
+      "Read(//**/*.key)",
+      "Read(//**/*.pfx)",
+      "Read(//**/*.p12)",
+      "Read(//**/credentials*)",
+      "Read(//**/secrets/**)",
+      "Read(//**/service-account*.json)",
+      "Edit(//**/.env)",
+      "Edit(//**/.env.*)",
+      "Write(//**/.env)",
+      "Write(//**/.env.*)"
+    ]
+  },
+  "sandbox": {
+    "enabled": false,
+    "_comment": "本番運用では true 推奨。OS: macOS=Seatbelt / Linux=bubblewrap。/sandbox コマンドでセッション中も切替可",
+    "autoAllowBashIfSandboxed": true,
+    "failIfUnavailable": false,
+    "filesystem": {
+      "allowRead": ["."],
+      "allowWrite": [".", "/tmp/build"],
+      "denyRead": ["~/.ssh", "~/.aws", "~/.gnupg"]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "registry.npmjs.org",
+        "github.com",
+        "objects.githubusercontent.com",
+        "pypi.org",
+        "files.pythonhosted.org"
+      ],
+      "allowAllUnixSockets": false,
+      "allowLocalBinding": false
+    }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-dangerous.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/detect-secrets.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "WebFetch|WebSearch|Bash|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PROJECT_DIR}/.claude/hooks/injection-scanner.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/format-on-save.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/session-context.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

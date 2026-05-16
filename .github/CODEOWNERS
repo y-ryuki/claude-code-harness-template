@@ -1,0 +1,9 @@
+# すべての変更は基本オーナーがレビュー
+* @<owner>
+
+# セキュリティクリティカルな部分は2名レビュー必須を推奨
+.claude/settings.json @<owner>
+.claude/hooks/ @<owner>
+.devcontainer/ @<owner>
+.github/workflows/ @<owner>
+SECURITY.md @<owner>

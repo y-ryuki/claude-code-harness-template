@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment": "Enterprise/Team プラン向けの最厳格 managed-settings 例。配置先: macOS=~/Library/Application Support/ClaudeCode/managed-settings.json / Linux=/etc/claude-code/managed-settings.json",
+  "permissions": {
+    "defaultMode": "default",
+    "disableBypassPermissionsMode": "disable",
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(npm run lint)",
+      "Bash(npm run test *)",
+      "Bash(npm run build)",
+      "Bash(pytest *)"
+    ],
+    "deny": [
+      "WebSearch",
+      "WebFetch",
+      "Bash(curl * | *)",
+      "Bash(wget * | *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push * --no-verify)",
+      "Bash(git commit * --no-verify)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf $HOME)",
+      "Bash(rm -rf *)",
+      "Bash(chmod 777 *)",
+      "Bash(chmod a+rwx *)",
+      "Bash(sudo *)",
+      "Bash(su *)",
+      "Bash(dd if=*)",
+      "Bash(mkfs*)",
+      "Bash(* --dangerously-skip-permissions *)",
+      "Read(//**/.env)",
+      "Read(//**/.env.*)",
+      "Read(//**/.aws/**)",
+      "Read(//**/.ssh/**)",
+      "Read(//**/.gnupg/**)",
+      "Read(//**/credentials*)",
+      "Read(//**/secrets/**)",
+      "Read(//**/*.pem)",
+      "Read(//**/*.key)",
+      "Write(//**/.env)",
+      "Edit(//**/.env)"
+    ]
+  },
+  "allowManagedPermissionRulesOnly": true,
+  "allowManagedHooksOnly": true,
+  "strictKnownMarketplaces": [],
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": true,
+    "filesystem": {
+      "allowRead": ["."],
+      "allowWrite": ["."],
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.kube",
+        "~/.docker"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "registry.npmjs.org",
+        "github.com",
+        "objects.githubusercontent.com"
+      ],
+      "allowAllUnixSockets": false,
+      "allowLocalBinding": false
+    }
+  }
+}

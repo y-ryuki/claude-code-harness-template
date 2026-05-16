@@ -1,0 +1,61 @@
+# Claude Code (個人設定 / ローカルログ)
+.claude/settings.local.json
+.claude/.local/
+.claude/sessions/
+CLAUDE.local.md
+*.local.md
+
+# Secrets
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.pfx
+*.p12
+credentials.json
+service-account.json
+secrets/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor
+.vscode/settings.json
+.idea/
+*.iml
+
+# Build / dependency
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+target/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+.coverage
+*.lcov
+htmlcov/
+
+# Temporary
+tmp/
+.tmp/
+*.bak

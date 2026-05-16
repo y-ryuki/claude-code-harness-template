@@ -1,0 +1,21 @@
+{
+  "_comment": "MCP サーバー設定の例。`cp .mcp.json.example .mcp.json` してチームで共有する場合のみ使用。秘密情報を含めない。",
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "_comment": "GITHUB_PERSONAL_ACCESS_TOKEN は環境変数で渡す。ここに書かない。",
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${CLAUDE_PROJECT_DIR}"
+      ]
+    }
+  }
+}

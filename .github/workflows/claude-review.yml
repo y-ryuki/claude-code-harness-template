@@ -1,0 +1,44 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # ドラフトPRは対象外
+    branches: [main]
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Claude code review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            このPRをレビューしてください。
+
+            ## チェック観点
+            1. ロジックの誤り / エッジケース未考慮
+            2. セキュリティ（OWASP Top 10 + Claude Code特有の脅威）
+            3. パフォーマンス（N+1、不要なループ）
+            4. 可読性 / 命名 / 重複
+            5. テストの不足
+            6. CLAUDE.md の規約違反
+
+            ## 出力
+            - Must Fix / Should Fix / Nit / Good に分類
+            - 各指摘に file:line と修正案
+            - 60行以内に収める
+
+            PRに対するコメントとして投稿してください。
+          claude_args: "--model sonnet"

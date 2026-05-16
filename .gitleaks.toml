@@ -1,0 +1,33 @@
+# Gitleaks 設定
+# https://github.com/gitleaks/gitleaks
+title = "claude-code-harness-template gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for false positives in this template"
+paths = [
+  '''docs/.*\.md$''',
+  '''README\.md$''',
+  '''.claude/settings\.local\.json\.example$''',
+  '''examples/.*$''',
+]
+regexes = [
+  '''sk-ant-\.\.\.''',           # ドキュメント内のプレースホルダ
+  '''AKIA[X]+''',                # ダミーキー
+  '''<your-.*-key>''',
+]
+
+# 追加ルール
+[[rules]]
+id = "anthropic-api-key"
+description = "Anthropic API Key"
+regex = '''sk-ant-[a-zA-Z0-9_-]{20,}'''
+keywords = ["anthropic", "claude"]
+
+[[rules]]
+id = "github-fine-grained-pat"
+description = "GitHub Fine-Grained Personal Access Token"
+regex = '''github_pat_[0-9a-zA-Z_]{82}'''
+keywords = ["github_pat"]

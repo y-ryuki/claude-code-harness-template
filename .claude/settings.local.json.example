@@ -1,0 +1,15 @@
+{
+  "_comment": "個人ローカル設定の雛形。`cp settings.local.json.example settings.local.json` してから編集。settings.local.json は自動 gitignore 対象。",
+  "permissions": {
+    "allow": [
+      "Bash(docker compose up *)",
+      "Bash(docker compose down *)"
+    ]
+  },
+  "model": "claude-opus-4-7",
+  "_model_options": [
+    "claude-opus-4-7",
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5-20251001"
+  ]
+}
