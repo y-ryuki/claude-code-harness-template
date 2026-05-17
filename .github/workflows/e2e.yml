@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pull-requests: write  # PR コメント投稿用
+  contents: write       # e2e-snapshots branch への push に必要
+  pull-requests: write  # PR コメント投稿
   actions: read
 
 jobs:
@@ -31,6 +31,9 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
       - name: Run Playwright tests
         id: playwright
@@ -85,18 +88,50 @@ jobs:
             echo "duration=0" >> $GITHUB_OUTPUT
           fi
 
-      - name: Collect screenshots for PR comment
+      - name: Convert webm to gif and collect screenshots
         if: github.event_name == 'pull_request' && always()
-        id: collect
+        id: convert
         run: |
-          mkdir -p screenshots-for-pr
-          # 失敗時スクショ + 明示スクショ両方をコピー
-          find tests/e2e/test-results -name "*.png" -exec cp {} screenshots-for-pr/ \; 2>/dev/null || true
-          SHOTS=$(ls screenshots-for-pr/ 2>/dev/null | wc -l | tr -d ' ')
-          echo "count=$SHOTS" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          mkdir -p pr-snapshots
 
-      # スクショを imgur / gh upload-artifact のリンクで公開する代わりに、
-      # peter-evans/create-or-update-comment を使い PR にレポートと artifact リンクをコメント
+          # webm → gif 変換（fps=10, 横幅 800px、品質と容量のバランス）
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            test_dir=$(basename "$(dirname "$f")")
+            out="pr-snapshots/${test_dir}.gif"
+            ffmpeg -y -i "$f" -vf "fps=10,scale=800:-1:flags=lanczos" -loop 0 "$out" </dev/null 2>/dev/null || true
+          done < <(find tests/e2e/test-results -name "*.webm" -type f 2>/dev/null)
+
+          # 明示スクショ + 失敗時スクショをコピー（テスト名プレフィクス付き）
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            test_dir=$(basename "$(dirname "$f")")
+            fname=$(basename "$f")
+            cp "$f" "pr-snapshots/${test_dir}__${fname}" 2>/dev/null || true
+          done < <(find tests/e2e/test-results -name "*.png" -type f 2>/dev/null)
+
+          # outputs（JS から参照）
+          gifs=$(ls pr-snapshots/*.gif 2>/dev/null | xargs -n1 basename | tr '\n' ',' | sed 's/,$//')
+          pngs=$(ls pr-snapshots/*.png 2>/dev/null | xargs -n1 basename | tr '\n' ',' | sed 's/,$//')
+          count=$(ls pr-snapshots/ 2>/dev/null | wc -l | tr -d ' ')
+
+          echo "gifs=$gifs" >> $GITHUB_OUTPUT
+          echo "pngs=$pngs" >> $GITHUB_OUTPUT
+          echo "count=$count" >> $GITHUB_OUTPUT
+
+      - name: Deploy snapshots to e2e-snapshots branch
+        if: github.event_name == 'pull_request' && steps.convert.outputs.count != '0' && steps.convert.outputs.count != ''
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: e2e-snapshots
+          folder: pr-snapshots
+          target-folder: snapshots/pr-${{ github.event.pull_request.number }}/${{ github.run_id }}
+          clean: false
+          single-commit: false
+          commit-message: "snapshot(e2e): PR #${{ github.event.pull_request.number }} run ${{ github.run_id }}"
+
       - name: Comment on PR
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v7
@@ -111,8 +146,28 @@ jobs:
               flaky: '${{ steps.parse.outputs.flaky }}',
               duration: '${{ steps.parse.outputs.duration }}',
             };
-            const status = stats.failed > 0 ? '❌ Failed' : (stats.flaky > 0 ? '⚠️ Flaky' : '✅ Passed');
+            const status = Number(stats.failed) > 0
+              ? '❌ Failed'
+              : (Number(stats.flaky) > 0 ? '⚠️ Flaky' : '✅ Passed');
             const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            // インライン用 raw URL
+            const baseUrl = `https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/e2e-snapshots/snapshots/pr-${context.issue.number}/${context.runId}`;
+            const gifs = '${{ steps.convert.outputs.gifs }}'.split(',').filter(Boolean);
+            const pngs = '${{ steps.convert.outputs.pngs }}'.split(',').filter(Boolean);
+
+            const renderItem = (name) => `<details><summary>${name}</summary>\n\n![${name}](${baseUrl}/${encodeURIComponent(name)})\n\n</details>`;
+
+            const mediaSection = [];
+            if (gifs.length > 0) {
+              mediaSection.push('', '### 🎬 操作録画 (GIF)', '', ...gifs.map(renderItem));
+            }
+            if (pngs.length > 0) {
+              mediaSection.push('', '### 📸 スクリーンショット', '', ...pngs.map(renderItem));
+            }
+            if (mediaSection.length === 0) {
+              mediaSection.push('', '_（録画 / スクショなし）_');
+            }
 
             const body = [
               `## 🎭 E2E Test Results`,
@@ -126,19 +181,12 @@ jobs:
               `| ⏭ Skipped | ${stats.skipped} |`,
               `| ⚠️ Flaky | ${stats.flaky} |`,
               `| ⏱ Duration | ${stats.duration}s |`,
+              ...mediaSection,
               ``,
-              `### 📹 Artifacts`,
+              `### 📦 Artifacts (原本: webm / HTML report)`,
               ``,
-              `- 🎬 [動画 & スクリーンショット](${runUrl}#artifacts)`,
-              `  - \`playwright-videos-${context.runId}\` — 全テストの録画 (.webm) + スクショ (.png)`,
-              `- 📊 [HTML Report](${runUrl}#artifacts)`,
-              `  - \`playwright-report-${context.runId}\` — Playwright HTMLレポート`,
-              ``,
-              `### 🔍 確認手順`,
-              ``,
-              `1. 上記リンクから Artifact を DL`,
-              `2. \`playwright-report\` を解凍して \`index.html\` を開く`,
-              `3. 失敗テストの動画 (.webm) を再生`,
+              `- 🎬 [動画 .webm & スクショ .png](${runUrl}#artifacts) — \`playwright-videos-${context.runId}\``,
+              `- 📊 [HTML Report](${runUrl}#artifacts) — \`playwright-report-${context.runId}\``,
               ``,
               `### 💡 ローカル再現`,
               ``,
@@ -150,10 +198,9 @@ jobs:
               `\`\`\``,
               ``,
               `---`,
-              `<sub>🤖 このコメントは [.github/workflows/e2e.yml](.github/workflows/e2e.yml) によって自動投稿されています</sub>`,
+              `<sub>🤖 [.github/workflows/e2e.yml](.github/workflows/e2e.yml) が自動投稿。GIF / PNG は \`e2e-snapshots\` branch から配信。</sub>`,
             ].join('\n');
 
-            // 既存の E2E コメントを探して更新（spam 防止）
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
