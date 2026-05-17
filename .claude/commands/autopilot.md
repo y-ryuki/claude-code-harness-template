@@ -88,6 +88,31 @@ npm run lint     # lint
 
 すべて green になるまで修正。
 
+### Step 6.5: 動作確認 (smoke)
+
+`/smoke auto` 相当のロジックを実行:
+
+1. `bash scripts/detect-change-scope.sh` で変更分類 (`ui` / `backend` / `both` / `other`)
+2. 分類に応じて smoke 実行:
+   - `ui` → `bash scripts/smoke-ui.sh`
+   - `backend` → `bash scripts/smoke-api.sh`
+   - `both` → 両方 (UI → API の順)
+   - `other` → skip
+3. `.smoke-results/api.md` / `.smoke-results/ui.md` を読み取り、Step 10 で PR body の「動作確認」セクションに転記
+
+**セキュリティ (実装側で保証済み)**:
+- baseUrl は `localhost` / `127.0.0.1` 限定（外部 URL は exit 2）
+- レスポンスのシークレットは自動 mask（Bearer / sk-* / AKIA* / api_key / password / token / JWT / Slack token）
+- dev server は `trap` で必ず cleanup (TERM → 3秒 → KILL)
+- 既存ポートは **絶対に kill せず** abort（孤児プロセス保護）
+- timeout: API=10s/req、UI=120s 全体
+- HTTP method allowlist (GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS のみ)
+- `SMOKE_DEV_CMD` は eval せず space split (コマンドインジェクション防止)
+
+**smoke が失敗しても PR 作成は止めない** — 結果を `.smoke-results/` に残し、Step 10 で PR body に "❌ smoke failed" を明示。レビュアーが最終判断。
+
+詳細: [.claude/rules/smoke.md](.claude/rules/smoke.md) / [.claude/commands/smoke.md](.claude/commands/smoke.md)
+
 ### Step 7: 多角レビュー
 
 ```
@@ -138,7 +163,15 @@ $(spec/specs/issue#-*.md の Acceptance Criteria を転記)
 ## 検証
 - [x] ユニットテスト追加
 - [x] /review-multi で全観点 APPROVE
-- [ ] 動作確認（レビュアーお願いします）
+- [x] 動作確認 (smoke) 実行済み
+
+<details><summary>🧪 動作確認 (smoke) 結果</summary>
+
+$(cat .smoke-results/api.md 2>/dev/null || echo "_API smoke skipped_")
+
+$(cat .smoke-results/ui.md 2>/dev/null || echo "_UI smoke skipped_")
+
+</details>
 
 ## レビューサマリー
 <7エージェントの統合結果のExecutive Summary>
