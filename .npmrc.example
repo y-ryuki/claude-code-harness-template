@@ -1,0 +1,11 @@
+# Takumi Guard (registry proxy for supply chain protection)
+# See ADR-0002: docs/decisions/0002-introduce-takumi-guard-for-supply-chain-protection.md
+#
+# Setup:
+#   1. Get a token at https://shisho.dev/ (email auth, free, no account needed)
+#   2. cp .npmrc.example .npmrc
+#   3. Replace tg_anon_REPLACE_ME with your token
+#   4. NEVER commit .npmrc (.gitignore covers it)
+
+registry=https://npm.flatt.tech/
+//npm.flatt.tech/:_authToken=tg_anon_REPLACE_ME

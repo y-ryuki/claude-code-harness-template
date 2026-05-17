@@ -17,6 +17,9 @@ CLAUDE.local.md
 credentials.json
 service-account.json
 secrets/
+# Takumi Guard token lives in .npmrc — must not be committed
+.npmrc
+!.npmrc.example
 
 # OS
 .DS_Store
