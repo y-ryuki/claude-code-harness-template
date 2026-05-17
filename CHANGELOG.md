@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/y-ryuki/claude-code-harness-template/compare/v1.0.0...v1.1.0) (2026-05-17)
+
+
+### Features
+
+* **autopilot:** add smoke step (UI E2E / API curl) with security guards ([7c3fce7](https://github.com/y-ryuki/claude-code-harness-template/commit/7c3fce7a1dc59394acd3437a6bb2f1576273b724))
+* **autopilot:** add smoke step (UI E2E / API curl) with security guards ([57ba7fd](https://github.com/y-ryuki/claude-code-harness-template/commit/57ba7fdfc07be06ae752f591ad7128cfd4d5c76a))
+* split .claude/rules/ and inline E2E GIFs in PR comments ([1a9d55b](https://github.com/y-ryuki/claude-code-harness-template/commit/1a9d55b1d791da10e01ee4f135b7beb34117a018))
+
 ## 1.0.0 (2026-05-16)
 
 
