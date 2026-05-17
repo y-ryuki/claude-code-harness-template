@@ -42,6 +42,15 @@ globs:
 - `npm audit` / `pip-audit` / `cargo audit` で脆弱性確認
 - HIGH 以上の脆弱性が出たら **24h 以内** に対応
 
+## Supply Chain Protection (Takumi Guard)
+
+本テンプレートは **Takumi Guard** (shisho.dev) の registry proxy 経由で install する前提。`npm audit` が出る**前**の悪性パッケージを 403 でブロックする proactive 防御層。
+
+- 詳細: [ADR-0002](../../docs/decisions/0002-introduce-takumi-guard-for-supply-chain-protection.md)
+- セットアップ: `cp .npmrc.example .npmrc` → `tg_anon_*` トークンを埋める
+- 対応: npm / pnpm / yarn / pip / uv / poetry
+- トークン (`tg_*`) は **secret 扱い**。`.npmrc` は `.gitignore` 済み
+
 ## Prohibited Patterns
 
 - NEVER add a dependency without checking the latest version first
@@ -52,3 +61,5 @@ globs:
 - NEVER mix package managers（`npm` + `yarn` + `pnpm` 同居禁止）
 - NEVER commit `node_modules`, `.venv`, vendored dependencies
 - NEVER ignore lockfile changes — `package-lock.json` / `pnpm-lock.yaml` も commit
+- NEVER commit `.npmrc` — Takumi Guard token (`tg_*`) を含むため secret 扱い (`.npmrc.example` のみ commit)
+- NEVER hardcode `tg_*` トークンをコードや docs に書く — 必ず `.npmrc` 経由

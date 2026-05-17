@@ -60,3 +60,4 @@ stateDiagram-v2
 | # | タイトル | Status | Date |
 |---|---------|--------|------|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | accepted | 2026-05-16 |
+| [0002](0002-introduce-takumi-guard-for-supply-chain-protection.md) | Introduce Takumi Guard for supply chain protection | proposed | 2026-05-17 |
