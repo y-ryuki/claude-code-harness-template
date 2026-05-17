@@ -68,3 +68,6 @@ tmp/
 /tests/e2e/.cache/
 playwright/.cache/
 screenshots-for-pr/
+
+# Smoke test results (autopilot Step 6.5 / /smoke)
+.smoke-results/

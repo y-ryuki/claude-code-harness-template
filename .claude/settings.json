@@ -85,7 +85,20 @@
       "Bash(gh pr review --comment *)",
       "Bash(gh pr ready *)",
       "Bash(date *)",
-      "Bash(date)"
+      "Bash(date)",
+      "Bash(bash scripts/smoke-ui.sh)",
+      "Bash(bash scripts/smoke-ui.sh *)",
+      "Bash(bash scripts/smoke-api.sh)",
+      "Bash(bash scripts/smoke-api.sh *)",
+      "Bash(bash scripts/detect-change-scope.sh)",
+      "Bash(bash scripts/detect-change-scope.sh *)",
+      "Bash(curl -sS http://localhost:* *)",
+      "Bash(curl http://localhost:* *)",
+      "Bash(curl -sS http://127.0.0.1:* *)",
+      "Bash(curl http://127.0.0.1:* *)",
+      "Bash(cat .smoke-results/*)",
+      "Bash(chmod +x scripts/smoke-*.sh)",
+      "Bash(lsof -nP -iTCP:* *)"
     ],
     "deny": [
       "Bash(curl * | *)",

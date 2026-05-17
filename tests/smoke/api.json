@@ -1,0 +1,12 @@
+{
+  "$comment": "API smoke test definitions. SECURITY: baseUrl は http(s)://localhost or http(s)://127.0.0.1 のみ許可（smoke-api.sh が検証）。本番 URL は絶対に書かないこと。",
+  "baseUrl": "http://localhost:3000",
+  "requests": [
+    {
+      "name": "health check",
+      "method": "GET",
+      "path": "/health",
+      "expectStatus": 200
+    }
+  ]
+}
