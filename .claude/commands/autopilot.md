@@ -101,8 +101,8 @@ npm run lint     # lint
 3. `.smoke-results/api.md` / `.smoke-results/ui.md` を読み取り、Step 10 で PR body の「動作確認」セクションに転記
 
 **セキュリティ (実装側で保証済み)**:
-- baseUrl は `localhost` / `127.0.0.1` 限定（外部 URL は exit 2）
-- レスポンスのシークレットは自動 mask（Bearer / sk-* / AKIA* / api_key / password / token / JWT / Slack token）
+- 全リクエストの最終URLは `localhost` / `127.0.0.1` 限定（不正設定は通信前に exit 2）
+- API結果はHTTPステータスと成功/失敗のみ。応答本文・ヘッダー・curlエラーはPR用結果に含めない
 - dev server は `trap` で必ず cleanup (TERM → 3秒 → KILL)
 - 既存ポートは **絶対に kill せず** abort（孤児プロセス保護）
 - timeout: API=10s/req、UI=120s 全体
@@ -142,7 +142,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ### Step 9: Push
 
 ```bash
-git push -u origin "$BRANCH"
+# 実際のブランチ名を直接指定する。変数・送信先省略・一括pushは拒否される。
+git push -u origin "<type>/<issue#>-<slug>"
 ```
 
 ### Step 10: PR 作成

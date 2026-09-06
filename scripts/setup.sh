@@ -36,7 +36,8 @@ check_tool "jq" "required" || MISSING=1
 check_tool "node" "required" || MISSING=1
 check_tool "gh" "recommended" || true
 check_tool "gitleaks" "recommended" || true
-check_tool "python3" "recommended" || true
+check_tool "python3" "required" || MISSING=1
+check_tool "bats" "recommended" || true
 
 if [ $MISSING -eq 1 ]; then
     echo ""

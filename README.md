@@ -77,6 +77,8 @@ rm -rf .git && git init
 | Claude Code CLI | 必須 | 本テンプレの実行基盤（[インストール](https://code.claude.com/docs/en/quickstart)） |
 | `gh` (GitHub CLI) | 推奨 | PR/Issue 操作 |
 | `jq` | 必須 | フック内でJSON処理 |
+| `python3` | 必須 | Git送信先の検証・API smoke |
+| `bats` | 監査時必須 | 安全ガードの回帰テスト |
 | `gitleaks` | 推奨 | シークレットスキャン |
 | Docker | 任意 | DevContainer 利用時 |
 

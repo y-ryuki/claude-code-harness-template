@@ -1,5 +1,5 @@
 #!/bin/bash
-# 設定スコアリング: 15項目の監査
+# 設定と実行時ガード: 26項目の監査
 # Critical 項目に欠落があれば上限 6.0/10（dotforge 流）
 
 set -uo pipefail
@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 PASS=0
 FAIL=0
 CRITICAL_FAIL=0
-TOTAL=25
+TOTAL=26
 
 check() {
     local desc="$1"
@@ -91,6 +91,9 @@ check "bats convention tests が存在" \
 check "block-merge.sh hook" \
     "Critical" \
     "test -x .claude/hooks/block-merge.sh"
+check "禁止操作と公開結果の回帰テストが成功" \
+    "Critical" \
+    "bash scripts/test-security.sh"
 check "Playwright E2E config" \
     "Recommended" \
     "test -f tests/e2e/playwright.config.ts"
