@@ -19,6 +19,20 @@
 
 ## 🧪 Layer 1: Hook ユニットテスト
 
+安全ガードをまとめて確認する場合は `bash scripts/test-security.sh`
+（または `npm run test:security`）を実行します。Python 3・jq・batsが必要です。
+登録されたBashフック、API smoke、ファイアウォールの失敗経路まで確認します。
+テスト中のHTTP・DNS・iptablesは代替処理を使い、実際の通信やホスト設定は変更しません。
+`audit.sh` とCIも同じ試験を必須として実行します。
+
+| 対象 | 回帰テスト |
+|---|---|
+| Git送信先・設定からのhook呼び出し | `tests/hooks/test_block_merge.bats`, `test_security_wiring.bats` |
+| 全リクエストの事前検証・公開結果の情報制限 | `tests/smoke/test_smoke_api.bats` |
+| IPv4/IPv6、再初期化、DNS/HTTP/ルール設定失敗 | `tests/firewall/test_init_firewall.bats` |
+
+これらの模擬試験は、実Linux環境のパケット遮断試験の代わりにはなりません。
+
 ### フレームワーク: bats-core
 
 [bats-core](https://github.com/bats-core/bats-core) は Bash テスティングフレームワーク。各 hook が「**何を許可・何をブロック**」するかをコードで明示する。

@@ -11,6 +11,7 @@
 | Claude Code CLI | 最新（v0.2.111+ / v1.0.20+） | `claude --version` |
 | Git | 2.30+ | `git --version` |
 | jq | 1.6+ | `jq --version` |
+| Python | 3.9+ | `python3 --version` |
 | Node.js | 20+ | `node --version` |
 
 ### 推奨
@@ -19,6 +20,7 @@
 |--------|------|
 | `gh` (GitHub CLI) | PR/Issue 操作 |
 | `gitleaks` | シークレットスキャン |
+| `bats` | `audit.sh` / 安全ガードの回帰テスト実行時は必須 |
 | Docker | DevContainer 利用 |
 | VS Code or Cursor | DevContainer のフロントエンド |
 

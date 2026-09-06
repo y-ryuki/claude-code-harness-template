@@ -50,6 +50,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Install security test dependencies
+        run: sudo apt-get update && sudo apt-get install -y bats jq python3
+
       - name: Run audit script
         run: |
           chmod +x scripts/audit.sh

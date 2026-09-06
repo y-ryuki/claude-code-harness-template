@@ -14,16 +14,16 @@
 
 ## セキュリティ・安全面
 
-- **baseUrl は `localhost` / `127.0.0.1` のみ許可** — `smoke-api.sh` が起動時に検証 (違反は exit 2)
-- **シークレット自動 mask** — Bearer / sk-* / AKIA* / gh[pousr]_* / `api_key` / `password` / `token` / JWT / Slack `xox*-*`
+- **localhost / 127.0.0.1 限定** — Python 3で全リクエストの最終URLを通信前に検証。`path` は `/` 始まり、ユーザー情報・外部ホスト・不正設定は送信前に exit 2
+- **API結果はステータスのみ** — 応答本文・ヘッダー・curlエラー・リクエスト名やURLなどの任意文字列は表示・保存しない
 - **dev server cleanup 保証** — `trap` で TERM → 3秒待ち → KILL
 - **既存ポート使用中なら abort** — 孤児プロセスを誤って kill しない
 - **timeout 必須** — API=10s/req、UI=120s 全体
-- **redirect 追従無効** — `curl --proto '=http,https' --no-keepalive`
+- **curl設定・proxy・redirect・URL展開を無効化** — `-q` / `--noproxy` / `--no-location` / `--globoff`。localhostは127.0.0.1へ固定
 - **method ホワイトリスト** — GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS のみ許可
 - **`DEV_CMD` は eval せず space split** — `read -ra DEV_ARGS <<<` (コマンドインジェクション防止)
 - **port 入力は整数のみ** — 1-65535 範囲外は exit 2
-- **レスポンス body は最大 20 行で truncate** — ログ肥大 / 機密漏洩防止
+- **不正設定時も結果を更新** — 過去の成功結果を残さず、未実行を明記
 
 ## 使い方
 
@@ -51,7 +51,7 @@ bash scripts/smoke-ui.sh                    # @smoke タグの Playwright を実
 
 `.smoke-results/` に markdown で保存（`.gitignore` 済み）：
 
-- `api.md` — API smoke の結果テーブル + 失敗詳細
+- `api.md` — リクエスト番号・HTTPメソッド・期待/実際のステータス・成功/失敗。応答本文は記録しない
 - `ui.md` — UI smoke の Pass/Fail 集計
 - `dev-server.log` — dev server の出力ログ (失敗時の debug 用)
 - `playwright.log` — Playwright の出力ログ

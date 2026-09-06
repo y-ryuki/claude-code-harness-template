@@ -58,6 +58,23 @@ PreToolUse hook の stdout で:
 
 ## 🛡️ 同梱フック一覧
 
+### Git送信先ガード: `block-merge.sh` / `block-merge.py`
+
+`PreToolUse` の `Bash` matcherから呼び出します。Python 3が必須です。
+`source:destination` の送信先を検査し、main/master/develop/releaseと
+release配下へのpushを拒否します。完全参照・Gitの省略参照も検査します。
+
+許可する送信先は命名規約のfeature系ブランチ（feat/fix/docs/refactor/test/
+chore/perf/ci/hotfix/style/build）です。HEADなどのシンボル名、変数、
+一括push、送り先の省略、設定上書きは拒否します。
+単独の `git push origin feat/123-example` は、remoteのpushマッピングが
+未設定の場合に限り使用できます。複合コマンドでは
+`feat/123-example:refs/heads/feat/123-example` のように送信先を明示します。
+
+Pythonの欠落・実行エラー時は終了コード2でツールを拒否します。
+任意スクリプト内部のGit操作を完全に解析する機能ではありません。
+GitHub側のブランチ保護も引き続き必要です。
+
 ### 1. `block-dangerous.sh` (PreToolUse, Bash)
 
 [ファイル](../.claude/hooks/block-dangerous.sh)

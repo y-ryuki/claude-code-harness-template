@@ -184,7 +184,7 @@ OS レベルの実装:
               └── ~/.ssh, ~/.aws は bind mount しない
 ```
 
-`init-firewall.sh` でデフォルト DROP + 明示 allowlist パターン。GitHub の IP レンジは meta API から動的取得。
+`init-firewall.sh` はIPv4/IPv6のDROPを先に設定し、filterルールだけを再構築します（Docker DNSのNATルールは保持）。IPv4宛先を明示許可し、IPv6はloopback以外を遮断します。GitHub meta APIの応答は構造とIP範囲を検証し、IPv4だけを適用します。DNS・HTTP・ルール設定が失敗した場合は非ゼロ終了し、DROPを解除しません。ポリシー設定自体が失敗した場合も起動処理を停止します。
 
 #### ⚠️ DevContainer の限界
 
@@ -220,7 +220,9 @@ Team / Enterprise プランでは組織レベルで強制可能:
 
 ## 🔍 監査スクリプト
 
-[`scripts/audit.sh`](../scripts/audit.sh) で 15 項目のスコアリング:
+[`scripts/audit.sh`](../scripts/audit.sh) で26項目を検証します。`bats` / `jq` / `python3` が必要です。ファイルの存在確認に加え、登録フック経由の保護ブランチ拒否、API送信先と公開結果、ファイアウォール初期化の回帰テストを実行します。テスト失敗や依存ツール不足はCritical失敗として扱います。
+
+表示例:
 
 ```
 ✅/❌  項目                                       重要度

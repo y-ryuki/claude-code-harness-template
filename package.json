@@ -4,8 +4,9 @@
   "description": "Hardened Claude Code harness template with strict guardrails and mobile-first dev flow",
   "private": true,
   "scripts": {
-    "test": "npm-run-all -s test:hooks test:settings",
+    "test": "npm-run-all -s test:security test:settings",
     "test:hooks": "bats tests/hooks/",
+    "test:security": "bash scripts/test-security.sh",
     "test:settings": "bash scripts/validate-settings.sh",
     "test:audit": "bash scripts/audit.sh",
     "test:e2e": "playwright test --config tests/e2e/playwright.config.ts",

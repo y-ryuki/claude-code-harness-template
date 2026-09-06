@@ -9,6 +9,11 @@ on:
       - '.claude/hooks/**'
       - 'tests/hooks/**'
       - 'tests/conventions/**'
+      - 'tests/smoke/**'
+      - 'tests/firewall/**'
+      - 'scripts/**'
+      - '.devcontainer/**'
+      - '.github/workflows/test-hooks.yml'
       - '.claude/settings.json'
       - 'docs/decisions/**'
       - 'docs/specs/**'
@@ -40,10 +45,11 @@ jobs:
         run: bats --tap tests/hooks/
 
       - name: Run bats tests (conventions)
-        run: bats --tap tests/conventions/
+        run: LC_ALL=C bats --tap tests/conventions/
 
       - name: Run settings validator
         run: bash scripts/validate-settings.sh
 
       - name: Run audit script
+        # Also runs registered-hook, API smoke and firewall regression tests.
         run: bash scripts/audit.sh
