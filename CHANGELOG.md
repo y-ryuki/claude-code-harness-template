@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/y-ryuki/claude-code-harness-template/compare/v1.0.0...v2.0.0) (2026-09-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **security:** Python 3が必須。曖昧なpushを拒否し、API結果から本文を除外する。DevContainerの外向きIPv6を遮断する。
+
+### Features
+
+* **autopilot:** add smoke step (UI E2E / API curl) with security guards ([7c3fce7](https://github.com/y-ryuki/claude-code-harness-template/commit/7c3fce7a1dc59394acd3437a6bb2f1576273b724))
+* **autopilot:** add smoke step (UI E2E / API curl) with security guards ([57ba7fd](https://github.com/y-ryuki/claude-code-harness-template/commit/57ba7fdfc07be06ae752f591ad7128cfd4d5c76a))
+* split .claude/rules/ and inline E2E GIFs in PR comments ([1a9d55b](https://github.com/y-ryuki/claude-code-harness-template/commit/1a9d55b1d791da10e01ee4f135b7beb34117a018))
+
+
+### Bug Fixes
+
+* **security:** Git・API検証・通信隔離の安全性を修正 ([ff3856a](https://github.com/y-ryuki/claude-code-harness-template/commit/ff3856a5a7ef9125c35354b997f8b372d17e5097))
+* **security:** Git・API検証・通信隔離の安全性を修正 ([a3a7b59](https://github.com/y-ryuki/claude-code-harness-template/commit/a3a7b59f22b816ad983b6da5860791efd5cab047))
+
 ## 1.0.0 (2026-05-16)
 
 
